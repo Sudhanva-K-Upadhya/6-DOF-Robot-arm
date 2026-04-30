@@ -71,8 +71,6 @@ Each TB6600 driver needs two signal lines from the Arduino — **DIR** (directio
 | J5 | Wrist Roll | 11 | 10 |
 | J6 | Gripper | 13 | 12 |
 
-> All DIR pins shown in **amber**, all PUL pins shown in **yellow/green** in the wiring diagram above.
-
 ---
 
 ## Arduino Firmware
