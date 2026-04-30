@@ -3,7 +3,7 @@
 > Stepper-motor controller for the **EB-15 Robotic Arm** by [Toolbox Robotics](https://toolboxrobotics.com/robotic-arm-eb15), driven by an **Arduino Mega** + **TB6600** drivers and operated from a **Python / Tkinter GUI** over USB serial.
 
 <p align="center">
-  <img src=" " width="500"/>
+  <img src="robot-1.jpeg" width="500"/>
 </p>
 
 ---
@@ -57,7 +57,7 @@ steps_per_degree = (200 × 16 × 38.4) / 360 ≈ 341.33 steps/°
 ## Wiring / Pin Map
 
 <p align="center">
-  <img src=" " width="500"/>
+  <img src="connection.jpeg" width="500"/>
 </p>
 
 Each TB6600 driver needs two signal lines from the Arduino — **DIR** (direction) and **PUL** (pulse/step).
