@@ -40,9 +40,9 @@ This project provides full open-loop stepper control for a 6-axis robotic arm. T
 | Component | Details |
 |-----------|---------|
 | Robotic Arm | [EB-15 by Toolbox Robotics](https://toolboxrobotics.com/robotic-arm-eb15) |
-| Microcontroller | Arduino Mega 2560 |
+| Microcontroller | Arduino Mega integrated with esp8266 |
 | Stepper Drivers | 6× TB6600 (one per joint) |
-| Stepper Motors | 6× (200 steps/rev, 1/16 microstepping) |
+| Stepper Motors | 3× Nema17 60mm and 3×Nema17 34mm |
 | Gear Ratio | 38.4 : 1 per joint |
 | Baud Rate | 115200 |
 
