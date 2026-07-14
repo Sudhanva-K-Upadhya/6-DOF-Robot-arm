@@ -3,7 +3,7 @@
 > Stepper-motor controller for the **EB-15 Robotic Arm** by [Toolbox Robotics](https://toolboxrobotics.com/robotic-arm-eb15), driven by an **Arduino Mega** + **TB6600** drivers and operated from a **Python / Tkinter GUI** over USB serial.
 
 <div style="width:600px; height:400px; border:1px dashed #555; display:flex; align-items:center; justify-content:center;">
-  <img src="robot.png" alt="6-DOF robot arm" style="max-width:100%; max-height:100%;" />
+  <img src="images/robot.png" alt="6-DOF robot arm" style="max-width:100%; max-height:100%;" />
 </div>
 
 ---
@@ -18,8 +18,6 @@
 - [Serial Protocol](#serial-protocol)
 - [Getting Started](#getting-started)
 - [Sequence Recording & Playback](#sequence-recording--playback)
-- [Known Limitations](#known-limitations)
-- [Project Structure](#project-structure)
 - [License](#license)
 
 ---
@@ -28,12 +26,10 @@
 
 This project provides full open-loop stepper control for a 6-axis robotic arm. The Arduino Mega drives six TB6600 stepper driver modules (one per joint). A desktop Python application connects over USB serial and lets you:
 
-- Move individual joints by angle (deg) with a slider or typed value
-- Move all six joints **simultaneously** with interleaved stepping
-- Set a custom home position and return to it at any time
-- Record, export, import, and play back multi-step motion sequences
-- Stop any single joint or emergency-stop all joints instantly
-
+- Move individual joints
+- Move all six joints simultaneously 
+- Set a custom home position and return 
+- Record, export, import, and play back 
 ---
 
 ## Hardware
@@ -42,7 +38,7 @@ This project provides full open-loop stepper control for a 6-axis robotic arm. T
 | ---------------- | -------------------------------------------------------------------------- |
 | Robotic Arm      | [EB-15 by Toolbox Robotics](https://toolboxrobotics.com/robotic-arm-eb15) |
 | Microcontroller  | Arduino Mega integrated with ESP8266                                      |
-| Stepper Drivers  | 6x TB6600 (one per joint)                                                  |
+| Stepper Drivers  | 6x TB6600                                                  |
 | Stepper Motors   | 3x Nema17 60mm and 3x Nema17 34mm                                          |
 | Gear Ratio       | 38.4 : 1 per joint                                                         |
 | Microstepping    | 1/16 (set on the TB6600 DIP switches)                                     |
@@ -58,10 +54,8 @@ STEPS_PER_DEGREE = (200 * 16 * 38.4) / 360 = 341.33 steps/deg
 
 ## Wiring / Pin Map
 
-Each TB6600 driver needs two signal lines from the Arduino Mega -- **DIR** (direction) and **PUL** (pulse/step). This mapping is shared identically between `robot_arm_mega.ino` (`PINS[][]`) and `robot_arm_gui.py` (`JOINT_PINS`), and is also viewable from the GUI's **CONNECTIONS** popup.
-
 <!-- Wiring diagram / driver connections -->
-![Wiring diagram](connection.jpeg)
+![Wiring diagram](images/connection.jpeg)
 
 | Joint | Name        | DIR Pin | PUL Pin |
 | ----- | ----------- | ------- | ------- |
@@ -71,8 +65,6 @@ Each TB6600 driver needs two signal lines from the Arduino Mega -- **DIR** (dire
 | J4    | Wrist Pitch | 9       | 8       |
 | J5    | Wrist Roll  | 11      | 10      |
 | J6    | Gripper     | 13      | 12      |
-
-All joints move between -180 deg and +180 deg.
 
 ---
 
@@ -84,18 +76,16 @@ Flash this sketch to your Arduino Mega before using the GUI.
 
 ### What it does
 
-- Initializes all 12 GPIO pins (DIR + PUL for each joint) as outputs and prints `READY` once serial is up
-- Listens for serial commands at **115200 baud**, one line at a time (`\n` terminated)
+- Initializes all 12 GPIO pins (DIR + PUL for each joint)
+- Listens for serial commands at **115200 baud**, 
 - Moves joints by pulse-stepping the TB6600 drivers, with a 5 microsecond DIR-line settle delay before stepping starts
 - Clamps any received `speed_us` value to the 100-5000 microsecond range regardless of what the GUI sends
-- Supports per-joint stop (`S<joint>`) and universal emergency stop (`X`), both checked continuously mid-move
-- For multi-joint moves, uses **interleaved stepping**: every joint that still has steps remaining gets a pulse edge on the same loop iteration, so joints start together and finish independently as their step counts run out
 
 ### Flash instructions
 
 1. Open `robot_arm_mega.ino` in the [Arduino IDE](https://www.arduino.cc/en/software)
 2. Select **Board -> Arduino Mega or Mega 2560**
-3. Select the correct COM / tty port
+3. Select the COM / tty port
 4. Click **Upload**
 
 ---
@@ -105,7 +95,7 @@ Flash this sketch to your Arduino Mega before using the GUI.
 **File:** `robot_arm_gui.py`
 
 <div style="width:600px; height:400px; border:1px dashed #555; display:flex; align-items:center; justify-content:center;">
-  <img src="software.png" alt="6-DOF robot arm" style="max-width:100%; max-height:100%;" />
+  <img src="images/software.png" alt="6-DOF robot arm" style="max-width:100%; max-height:100%;" />
 </div>
 
 ### Requirements
@@ -134,7 +124,7 @@ python robot_arm_gui.py
 | Feature              | Description                                                              |
 | --------------------- | -------------------------------------------------------------------------- |
 | Port selector         | Lists available COM / tty ports with a refresh button                     |
-| Connect / Disconnect  | Opens or closes the serial connection at 115200 baud (120s read timeout) |
+| Connect / Disconnect  | Opens or closes the serial  at 115200 baud (120s read timeout) |
 | Per-joint sliders     | Drag to set target angle (-180 deg to +180 deg)                          |
 | Angle entry box       | Type an exact angle and press **Enter**, or click **SEND**               |
 | Per-joint speed       | Individual slow-to-fast slider per joint (200-3000 microsecond pulse delay) |
@@ -144,7 +134,7 @@ python robot_arm_gui.py
 | SET HOME              | Marks the current motor position as 0 deg for all joints                  |
 | GO HOME               | Sends all joints back to the saved home position                          |
 | SEND ALL              | Moves all joints simultaneously to their currently shown angles           |
-| CONNECTIONS popup     | Shows the full Arduino pin map in a side window                           |
+| S popup     | Shows the full Arduino pin map in a side window                           |
 | Log panel             | Timestamped, color-coded log of every action and Arduino reply            |
 
 Angle values are tracked absolutely (in steps) on the Python side via `self.motor_steps`, and only the *delta* between the current position and the target is sent to the Arduino for each move.
@@ -215,26 +205,6 @@ Sequences are stored as plain JSON and can be edited by hand:
     }
   ]
 }
-```
-
----
-
-## Known Limitations
-
-- **Windows-only DPI call:** `robot_arm_gui.py` calls `ctypes.windll.shcore.SetProcessDpiAwareness(1)` at startup. This is a Windows API and will raise an `AttributeError` on Linux or macOS. Comment out or guard that line (e.g. with `sys.platform == "win32"`) if running elsewhere.
-- **Fixed window size:** the GUI window is set to `resizable(False, False)`, so it will not adapt to smaller screens.
-- **Open-loop control:** there is no encoder feedback. Step counts are tracked purely in software (`motor_steps` / `home_steps`), so any missed steps, stalls, or manual movement of the arm while disconnected will desynchronize the tracked position from the real one. Re-run **SET HOME** to resync.
-- **Long serial timeout:** the serial port opens with a 120 second read timeout, so a hung/unplugged Arduino can make a move command appear to freeze for up to two minutes before failing.
-
----
-
-## Project Structure
-
-```
-robot-arm/
-|-- robot_arm_mega.ino   # Arduino Mega firmware
-|-- robot_arm_gui.py     # Python / Tkinter desktop controller
-`-- README.md
 ```
 
 ---
